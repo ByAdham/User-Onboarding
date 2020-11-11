@@ -4,6 +4,8 @@ import MemberForm from './Components/MemberForm'
 import Members from "./Components/Members";
 
 function App() {
+
+
   return (
     <div className="App">
       <header className="App-header">
@@ -16,7 +18,7 @@ function App() {
       </section>
 
       <section className="currentMembers">
-        <Members />
+        
       </section>
     </div>
   );

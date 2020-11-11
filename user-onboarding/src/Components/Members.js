@@ -12,11 +12,11 @@ export default function Members (props) {
             {members.map((member) => {
                 return (
                     <Card>
-                        <CardTitle>{member.name}</CardTitle>
-                        <CardSubtitle>{member.email}</CardSubtitle>
+                        <CardTitle>{member}</CardTitle>
+                        <CardSubtitle>{member}</CardSubtitle>
                     </Card>
                 )
-            })};
+            })}
         </div>
     );
 };

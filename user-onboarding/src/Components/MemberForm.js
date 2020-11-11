@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import Members from "./Members";
 
 
-export default function MemberForm (props) {
-    const [members, setMembers] = useState({
-        name: '',
-        email: '',
-    })
+export default function MemberForm () {
+    const [members, setMembers] = useState([]);
+
+    useEffect(()=> {
+        setMembers(['Adham'])
+        },[])
+
 
     return(
         <>
