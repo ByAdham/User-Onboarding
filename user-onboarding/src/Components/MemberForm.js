@@ -3,54 +3,117 @@ import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import Members from "./Members";
 import styled from "styled-components";
 import axios from "axios";
+import * as yup from 'yup';
 
+
+const schema = yup.object().shape({
+    user: yup.string().required('Your name is a required field'),
+    email: yup.string().required('Please enter your email'),
+    password: yup.string().required('Please enter a password'),
+    accept: yup.boolean().oneOf([true, "You have to accept the risk"]),
+});
 
 export default function MemberForm () {
-    const [members, setMembers] = useState([]);
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        agree: 'false',
+    //Create a slice of state for the current members to be updated when the form is submitted and passed to the members component
+
+    ////STATES/////
+    //CREATE A SLICE OF STATE FOR THE MEMBERS THAT WILL BE PASSED DOWN TO THE MEMBERS COMPONENT
+    const initialMembers = [];
+    const [members, setMembers] = useState(initialMembers);
+    //CREATE A SLICE OF STATE FOR THE DATA IN THE FORM
+    const [form, setForm] = useState({
+        user:'',
+        email:'',
+        password:'',
+        accept: false,
     });
-
-    useEffect(()=> {
-        setMembers(['Adham', 'Wael', 'Mohamed'])
-        },[])
+    //Create a slice of state for the form button to be disabled by default
+    const [disabled, setDisabled] = useState(true);
 
 
-    return(
+    ////EVENT HANDLERS AND HELPERS 
+    ///FORM MANIPULATION
+    //Creare a change event to attach to the form elements, receive event data and run the slice of state changer after passing to it the data we parsed
+    const change = event => {
+        const { checked, value, name, type} = event.target
+        const valueToUse = type === 'checkbox' ? checked : value 
+        formStateChange(name, valueToUse)
+    }
+        //Make the form inputs set the form slice of state 
+        const formStateChange = (name, value) => {
+            setForm({...form, [name]: value})
+        }
+
+    //Fire an effect hook to check the schema vs the changes in the form and update the button's slice of state
+    useEffect(() => {
+        schema.isValid(form).then((valid) => {
+            setDisabled(!valid);
+        });
+     }, [form]);
+
+    ///FORM SUBMISSION 
+    //Post new member helper
+    const postMember = (member) => {
+        axios
+        .post ('https://reqres.in/api/users', member)
+        
+        .then((res) => {
+            
+            setMembers(members.push(res.data))
+            // debugger;
+        })
+    };
+
+    //Form submit event handler to be attached to the form onSubmit property
+    const submit = (e) => {
+        e.preventDefault();
+        const newMember = {
+            User: form.user.trim(),
+            Email: form.email.trim(),
+        };
+        postMember(newMember);
+    };
+        
+    //Add the new member from the form to the members state without deleting the previos state
+    //Create a helper that will submit the data
+    
+    // const submit = useEffect(()=> {setMembers([...members, ])
+    // //  debugger;
+    // }, []);
+    // // debugger;
+
+    return (
         <>
         <StyledFormParentDiv>
         <h2> Join the Tantive team into hyperspace!</h2>
         <StyledForm>
-            <Form>
+            <Form onSubmit={submit}>
             <FormGroup>
-                <Label for="name">Name</Label>
-                <Input type="name" name="email" id="name" placeholder="Name" />
+                <Label for="user">Name</Label>
+                <Input type="user" value={form.name} name="user" id="user" onChange={change} placeholder="Name" />
             </FormGroup>
             <FormGroup>
                 <Label for="email">Email</Label>
-                <Input type="email" name="email" id="email" placeholder="Email" />
+                <Input type="email" value={form.email} name="email" id="email" onChange={change} placeholder="Email" />
             </FormGroup>
             <FormGroup>
                 <Label for="password">Password</Label>
-                <Input type="password" name="password" id="password" placeholder="Password" />
+                <Input type="password" value={form.password} name="password" id="password" onChange={change} placeholder="Password" />
             </FormGroup>
             {/* <br></br> */}
-            <FormGroup check>
+            <FormGroup>
                 <Label check>
-                <Input name= "accept" type="checkbox" />{' '}
+                <Input name= "accept" checked={form.accept} type="checkbox" onChange={change} />{' '}
                     I accept the risks of space travel
                 </Label>
             </FormGroup>
             <br></br>
-            <Button color='primary'> Jump through hyperspace! </Button>
+            <Button color='primary' disabled={disabled} > Jump through hyperspace! </Button>
             </ Form>
             
         </StyledForm>
         </ StyledFormParentDiv>
-        <Members members={members}/>
+        <Members currentMembers={members} />
         </>
     )
 }

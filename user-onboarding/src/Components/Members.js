@@ -1,24 +1,25 @@
 import React from "react";
 import styled from "styled-components";
 import {Card, CardTitle, CardSubtitle} from "reactstrap";
-import {Button} from 'reactstrap';
+
 
 export default function Members (props) {
-    const {members} = props;
-
+    const {currentMembers} = props;
+   
+    // debugger;
 
     return (
         <StyledMembersParentDiv>
             <br></br>
-            {members.map((member) => {
-                return (
-                    <StyledCard>
-                        <Card>
-                            <CardTitle>{member}</CardTitle>
-                            <CardSubtitle>{member}</CardSubtitle>
-                        </Card>
-                    </StyledCard>
-                )
+            {currentMembers.map((member) => {
+                // return (
+                //     <StyledCard>
+                //         <Card>
+                //             <CardTitle>{member.name}</CardTitle>
+                //             <CardSubtitle>{member.email}</CardSubtitle>
+                //         </Card>
+                //     </StyledCard>
+                // )
             })}
     
         </StyledMembersParentDiv>
