@@ -6,22 +6,20 @@ import {Card, CardTitle, CardSubtitle} from "reactstrap";
 export default function Members (props) {
     const {currentMembers} = props;
    
-    // debugger;
+    console.log(currentMembers);
 
     return (
         <StyledMembersParentDiv>
-            <br></br>
             {currentMembers.map((member) => {
-                // return (
-                //     <StyledCard>
-                //         <Card>
-                //             <CardTitle>{member.name}</CardTitle>
-                //             <CardSubtitle>{member.email}</CardSubtitle>
-                //         </Card>
-                //     </StyledCard>
-                // )
+                return (
+                    <StyledCard>
+                        <Card>
+                            <CardTitle>{member.User}</CardTitle>
+                            <CardSubtitle>{member.Email}</CardSubtitle>
+                        </Card>
+                    </StyledCard>
+                )
             })}
-    
         </StyledMembersParentDiv>
     );
 };
@@ -31,7 +29,7 @@ const StyledMembersParentDiv = styled.div`
 /* border: blue solid 1px; */
 display: flex;
 flex-flow: column;
-
+margin: 20px;
 align-items: center;
 `
 

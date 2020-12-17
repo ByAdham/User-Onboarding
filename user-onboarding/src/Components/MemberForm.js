@@ -7,7 +7,7 @@ import * as yup from 'yup';
 
 
 const schema = yup.object().shape({
-    user: yup.string().required('Your name is a required field'),
+    user: yup.string().required('Your name is required'),
     email: yup.string().required('Please enter your email'),
     password: yup.string().required('Please enter a password'),
     accept: yup.boolean().oneOf([true, "You have to accept the risk"]),
@@ -21,12 +21,13 @@ export default function MemberForm () {
     const initialMembers = [];
     const [members, setMembers] = useState(initialMembers);
     //CREATE A SLICE OF STATE FOR THE DATA IN THE FORM
-    const [form, setForm] = useState({
+    const initialFormState ={
         user:'',
         email:'',
         password:'',
         accept: false,
-    });
+    }
+    const [form, setForm] = useState(initialFormState);
     //Create a slice of state for the form button to be disabled by default
     const [disabled, setDisabled] = useState(true);
 
@@ -59,8 +60,7 @@ export default function MemberForm () {
         
         .then((res) => {
             
-            setMembers(members.push(res.data))
-            // debugger;
+            setMembers([...members, res.data]);
         })
     };
 
@@ -72,15 +72,8 @@ export default function MemberForm () {
             Email: form.email.trim(),
         };
         postMember(newMember);
+        setForm(initialFormState);
     };
-        
-    //Add the new member from the form to the members state without deleting the previos state
-    //Create a helper that will submit the data
-    
-    // const submit = useEffect(()=> {setMembers([...members, ])
-    // //  debugger;
-    // }, []);
-    // // debugger;
 
     return (
         <>
@@ -90,7 +83,7 @@ export default function MemberForm () {
             <Form onSubmit={submit}>
             <FormGroup>
                 <Label for="user">Name</Label>
-                <Input type="user" value={form.name} name="user" id="user" onChange={change} placeholder="Name" />
+                <Input type="text" value={form.name} name="user" id="user" onChange={change} placeholder="Name" />
             </FormGroup>
             <FormGroup>
                 <Label for="email">Email</Label>
@@ -113,7 +106,7 @@ export default function MemberForm () {
             
         </StyledForm>
         </ StyledFormParentDiv>
-        <Members currentMembers={members} />
+        <Members id={members.id} currentMembers={members} />
         </>
     )
 }
